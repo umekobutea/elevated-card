@@ -2,28 +2,71 @@
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP&display=swap" rel="stylesheet">
   <style>
     body {
+      font-family: 'Noto Sans JP', sans-serif;
       background: #fafafa;
+      margin: 72px 40px;
+    }
+    .controller {
+      margin: 0 8px 16px 0;
+    }
+    .controller label {
+      margin-right: 8px;
+    }
+    .controller input[type="checkbox"] {
+      margin-right: 8px;
     }
   </style>
 </head>
 <body>
-  <div id="demo"></div>
-
+  <div id="demo">
+  </div>
   <script type="module">
     import { html, render } from 'lit-html';
     import '../elevated-card.js';
-
-    const title = 'Hello owc World!';
-    render(
+    const state = {
+      showImg: true,
+      showSupportText: true
+    };
+    const imgHandler = state => event => {
+      view({
+        ...state,
+        showImg: event.target.checked
+      })
+    }
+    const supportTextHandler = state => event => {
+      view({
+        ...state,
+        showSupportText: event.target.checked
+      })
+    }
+    const view = state => render(
       html`
-        <elevated-card .title=${title}>
-          some more light-dom
+        <div class="controller">
+          <label>
+            <input type="checkbox"
+                   ?checked=${state.showImg}
+                   @change=${imgHandler(state)}
+                   >画像
+          </label>
+          <label>
+            <input type="checkbox"
+                   ?checked=${state.showSupportText}
+                   @change=${supportTextHandler(state)}
+                   >説明
+          </label>
+        </div>
+        <elevated-card title="こたろう"
+                       img=${state.showImg ? `/demo/assets/img/kotaro.jpg` : ""}
+                       >
+          ${state.showSupportText ? html`おそとでひなたぼっこ。` : ``}
         </elevated-card>
       `,
       document.querySelector('#demo')
     );
+    view(state);
   </script>
 </body>
 </html>
